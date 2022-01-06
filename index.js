@@ -44,6 +44,13 @@ async function run() {
             console.log('load', result);
             res.send(result);
         });
+        //delete product
+        app.delete('/books/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await booksCollection.deleteOne(query);
+            res.json(result);
+        });
         //find order using email
         app.get('/purchased', async (req, res) => {
             const email = req.query.email;
@@ -86,6 +93,38 @@ async function run() {
         app.post('/books', async (req, res) => {
             const cursor = req.body;
             const result = await booksCollection.insertOne(cursor);
+            res.json(result);
+        });
+        //find all the order
+        app.get('/purchased/allorder', async (req, res) => {
+            const cursor = purchasedCollection.find({});
+            const services = await cursor.toArray();
+            res.send(services);
+        });
+        //confirmed order
+        app.put('/purchased/:id',async(req,res)=>{
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                  "status": "Shipped"
+                },
+              };
+            const result=await purchasedCollection.updateOne(query,updateDoc);
+            res.json(result);
+        }); 
+        //find all the order
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        });
+        //cancel review
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await reviewsCollection.deleteOne(query);
             res.json(result);
         });
     }
