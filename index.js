@@ -127,6 +127,12 @@ async function run() {
             const result = await reviewsCollection.deleteOne(query);
             res.json(result);
         });
+        //find all the review
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        });
     }
     finally {
         //a
