@@ -23,11 +23,29 @@ async function run() {
         const reviewsCollection = database.collection('reviews');
         const usersCollection = database.collection('users');
 
-        app.get('/books', async (req, res) => {
+        // app.get('/books', async (req, res) => {
+        //     const cursor = booksCollection.find({});
+        //     const books = await cursor.toArray();
+        //     res.send(books);
+        // });
+        app.get("/books", async (req, res) => {
             const cursor = booksCollection.find({});
-            const books = await cursor.toArray();
-            res.send(books);
-        });
+            const page = parseInt(req.query.page);
+            let books;
+            const count = await cursor.count();
+            if (page >= 0) {
+                books = await cursor
+                .skip(page * 8)
+                .limit(8)
+                .toArray();
+            } else {
+                books = await cursor.toArray();
+            }
+            res.send({
+              count,
+              books,
+            });
+          });
 
         //save order data
         app.post('/purchased', async (req, res) => {
@@ -140,6 +158,9 @@ async function run() {
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
+        app.post('/api/register',(req,res)=>{
+            
+        })
     }
     finally {
         //a
