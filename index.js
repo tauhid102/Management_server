@@ -23,12 +23,12 @@ async function run() {
         const reviewsCollection = database.collection('reviews');
         const usersCollection = database.collection('users');
 
-        // app.get('/books', async (req, res) => {
-        //     const cursor = booksCollection.find({});
-        //     const books = await cursor.toArray();
-        //     res.send(books);
-        // });
-        app.get("/books", async (req, res) => {
+        app.get('/books', async (req, res) => {
+            const cursor = booksCollection.find({});
+            const books = await cursor.toArray();
+            res.send(books);
+        });
+        app.get("/books/booksCollection", async (req, res) => {
             const cursor = booksCollection.find({});
             const page = parseInt(req.query.page);
             let books;
